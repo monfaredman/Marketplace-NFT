@@ -159,25 +159,27 @@ contract NftMarket is ERC721URIStorage, Ownable {
     emit NftItemCreated(tokenId, price, msg.sender, true);
   }
 
-  function _beforeTokenTransfer(
+function _beforeTokenTransfer(
     address from,
     address to,
-    uint tokenId
-  ) internal virtual override {
-    super._beforeTokenTransfer(from, to, tokenId);
+    uint256 tokenId,
+    uint256 batchSize
+) internal virtual override {
+    super._beforeTokenTransfer(from, to, tokenId, batchSize);
 
     if (from == address(0)) {
-      _addTokenToAllTokensEnumeration(tokenId);
+        _addTokenToAllTokensEnumeration(tokenId);
     } else if (from != to) {
-      _removeTokenFromOwnerEnumeration(from, tokenId);
+        _removeTokenFromOwnerEnumeration(from, tokenId);
     }
 
     if (to == address(0)) {
-      _removeTokenFromAllTokensEnumeration(tokenId);
+        _removeTokenFromAllTokensEnumeration(tokenId);
     } else if (to != from) {
-      _addTokenToOwnerEnumeration(to, tokenId);
+        _addTokenToOwnerEnumeration(to, tokenId);
     }
-  }
+}
+
 
   function _addTokenToAllTokensEnumeration(uint tokenId) private {
     _idToNftIndex[tokenId] = _allNfts.length;
